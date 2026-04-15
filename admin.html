@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BWS Details — Admin Dashboard</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f6f9; min-height: 100vh; padding: 1.5rem 1rem; color: #1a1a1a; }
+  .app { max-width: 800px; margin: 0 auto; }
+
+  /* Header */
+  .header { display: flex; align-items: center; gap: 14px; margin-bottom: 1.5rem; }
+  .logo { width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0; overflow: hidden; }
+  .logo img { width: 100%; height: 100%; object-fit: cover; }
+  .header-text .brand { font-size: 18px; font-weight: 600; color: #1a1a1a; }
+  .header-text .sub { font-size: 13px; color: #666; margin-top: 1px; }
+
+  /* Stats */
+  .dash-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+  .stat-card { background: #fff; border: 1px solid #e2e6ea; border-radius: 10px; padding: 1rem; }
+  .stat-label { font-size: 12px; color: #666; margin-bottom: 4px; font-weight: 500; }
+  .stat-val { font-size: 24px; font-weight: 600; color: #1a1a1a; }
+
+  /* Card */
+  .card { background: #fff; border: 1px solid #e2e6ea; border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+  .section-title { font-size: 15px; font-weight: 600; color: #1a1a1a; margin-bottom: 1rem; }
+
+  /* Refresh bar */
+  .toolbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  .refresh-btn { padding: 8px 20px; border-radius: 8px; border: 1px solid #d0d7de; background: #fff; color: #555; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.15s; }
+  .refresh-btn:hover { background: #f0f4f8; border-color: #1a3a5c; }
+  .last-refresh { font-size: 12px; color: #888; }
+
+  /* Booking rows */
+  .booking-row { display: flex; align-items: flex-start; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid #e2e6ea; gap: 12px; }
+  .booking-row:last-child { border-bottom: none; }
+  .b-client { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+  .b-detail { font-size: 12px; color: #666; margin-top: 3px; }
+  .b-price { font-size: 14px; font-weight: 600; color: #1a3a5c; text-align: right; }
+  .b-date { font-size: 12px; color: #666; margin-top: 3px; text-align: right; }
+  .b-time { font-size: 11px; color: #aaa; margin-top: 2px; }
+  .status-badge { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 20px; margin-top: 5px; cursor: pointer; font-weight: 500; transition: all 0.15s; }
+  .status-badge:hover { opacity: 0.8; }
+  .status-pending { background: #fef3cd; color: #856404; }
+  .status-confirmed { background: #eaf1f8; color: #1a3a5c; }
+  .status-done { background: #d1f0e0; color: #1a7a45; }
+  .delete-btn { background: none; border: 1px solid #e2e6ea; color: #888; cursor: pointer; font-size: 12px; padding: 3px 10px; border-radius: 6px; margin-top: 5px; display: block; transition: all 0.15s; }
+  .delete-btn:hover { background: #fff0f0; color: #c0392b; border-color: #c0392b; }
+  .empty { text-align: center; padding: 2.5rem; color: #888; font-size: 14px; }
+
+  /* Loading */
+  .loading { text-align: center; padding: 2rem; color: #888; font-size: 14px; }
+
+  /* New booking indicator */
+  .new-badge { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 10px; background: #c0392b; color: #fff; font-weight: 600; margin-left: 8px; vertical-align: middle; }
+
+  @media (max-width: 500px) {
+    .dash-stats { grid-template-columns: 1fr 1fr; }
+    .toolbar { flex-direction: column; gap: 8px; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="logo"><img src="logo.png" alt="BWS"></div>
+    <div class="header-text">
+      <div class="brand">BWS Details — Admin</div>
+      <div class="sub">Booking notifications &amp; management</div>
+    </div>
+  </div>
+
+  <div class="dash-stats">
+    <div class="stat-card">
+      <div class="stat-label">Total bookings</div>
+      <div class="stat-val" id="statTotal">-</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pending</div>
+      <div class="stat-val" id="statPending">-</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Revenue (done)</div>
+      <div class="stat-val" id="statRevenue">-</div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="refresh-btn" onclick="loadBookings()">Refresh bookings</button>
+    <span class="last-refresh" id="lastRefresh"></span>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Client bookings</div>
+    <div id="bookingsList">
+      <div class="loading">Loading bookings...</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let bookings = [];
+
+async function loadBookings() {
+  const list = document.getElementById('bookingsList');
+  list.innerHTML = '<div class="loading">Loading bookings...</div>';
+
+  try {
+    const res = await fetch('/api/bookings');
+    if (!res.ok) throw new Error('Failed to fetch');
+    bookings = await res.json();
+    renderDashboard();
+    document.getElementById('lastRefresh').textContent = 'Last refreshed: ' + new Date().toLocaleTimeString();
+  } catch (e) {
+    list.innerHTML = '<div class="empty">Could not load bookings. Try refreshing.</div>';
+  }
+}
+
+function renderDashboard() {
+  const pending = bookings.filter(b => b.status === 'pending').length;
+  const revenue = bookings.filter(b => b.status === 'done').reduce((s, b) => s + b.total, 0);
+  document.getElementById('statTotal').textContent = bookings.length;
+  document.getElementById('statPending').textContent = pending;
+  document.getElementById('statRevenue').textContent = '$' + revenue;
+
+  const list = document.getElementById('bookingsList');
+  if (!bookings.length) {
+    list.innerHTML = '<div class="empty">No bookings yet. They\'ll appear here once clients book on the main site.</div>';
+    return;
+  }
+
+  const sorted = [...bookings].sort((a, b) => new Date(b.createdAt || b.date).getTime() - new Date(a.createdAt || a.date).getTime());
+  list.innerHTML = sorted.map(b => {
+    const isNew = b.status === 'pending';
+    const dateFormatted = new Date(b.date + 'T12:00:00').toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' });
+    const createdFormatted = b.createdAt ? new Date(b.createdAt).toLocaleString() : '';
+    return '<div class="booking-row">' +
+      '<div>' +
+        '<div class="b-client">' + escapeHtml(b.name) + (isNew ? '<span class="new-badge">NEW</span>' : '') + '</div>' +
+        '<div class="b-detail">' + escapeHtml(b.phone) + '</div>' +
+        '<div class="b-detail">' + escapeHtml(b.size.split('/')[0].trim()) + (b.addons.length ? ' &middot; ' + b.addons.map(escapeHtml).join(', ') : '') + '</div>' +
+        (createdFormatted ? '<div class="b-time">Booked: ' + createdFormatted + '</div>' : '') +
+        '<span class="status-badge status-' + b.status + '" onclick="cycleStatus(\'' + b.id + '\')" title="Click to change status">' + b.status + '</span>' +
+      '</div>' +
+      '<div>' +
+        '<div class="b-price">$' + b.total + '</div>' +
+        '<div class="b-date">' + dateFormatted + '</div>' +
+        '<button class="delete-btn" onclick="deleteBooking(\'' + b.id + '\')">remove</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+async function cycleStatus(id) {
+  const b = bookings.find(b => b.id === id);
+  if (!b) return;
+  const statuses = ['pending', 'confirmed', 'done'];
+  const newStatus = statuses[(statuses.indexOf(b.status) + 1) % statuses.length];
+
+  try {
+    const res = await fetch('/api/bookings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, status: newStatus }),
+    });
+    if (res.ok) {
+      b.status = newStatus;
+      renderDashboard();
+    }
+  } catch (e) {
+    alert('Failed to update status. Please try again.');
+  }
+}
+
+async function deleteBooking(id) {
+  if (!confirm('Remove this booking?')) return;
+
+  try {
+    const res = await fetch('/api/bookings?id=' + id, { method: 'DELETE' });
+    if (res.ok) {
+      bookings = bookings.filter(b => b.id !== id);
+      renderDashboard();
+    }
+  } catch (e) {
+    alert('Failed to delete booking. Please try again.');
+  }
+}
+
+// Auto-refresh every 30 seconds to catch new bookings
+setInterval(loadBookings, 30000);
+
+// Initial load
+loadBookings();
+</script>
+</body>
+</html>
