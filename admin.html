@@ -630,6 +630,64 @@
         .success-msg .s-title { font-size: 16px; font-weight: 600; color: #c0392b; margin-bottom: 6px; }
         .success-msg .s-sub { font-size: 14px; color: #888; }
 
+        /* Dashboard */
+        .dashboard-section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .dash-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: #161616;
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .stat-label { font-size: 12px; color: #666; margin-bottom: 4px; font-weight: 500; }
+        .stat-val { font-size: 28px; font-weight: 700; color: #fff; }
+
+        .booking-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid #222;
+            gap: 12px;
+        }
+        .booking-row:last-child { border-bottom: none; }
+        .b-client { font-size: 14px; font-weight: 600; color: #fff; }
+        .b-detail { font-size: 12px; color: #666; margin-top: 3px; }
+        .b-price { font-size: 14px; font-weight: 600; color: #c0392b; text-align: right; }
+        .b-date { font-size: 12px; color: #666; margin-top: 3px; text-align: right; }
+
+        .status-badge { display: inline-block; font-size: 11px; padding: 3px 10px; border-radius: 20px; margin-top: 5px; cursor: pointer; font-weight: 500; }
+        .status-pending { background: rgba(241,196,15,0.15); color: #f1c40f; }
+        .status-confirmed { background: rgba(192,57,43,0.15); color: #c0392b; }
+        .status-done { background: rgba(46,204,113,0.15); color: #2ecc71; }
+
+        .delete-btn {
+            background: none;
+            border: 1px solid #333;
+            color: #666;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 6px;
+            margin-top: 5px;
+            display: block;
+            font-family: inherit;
+        }
+        .delete-btn:hover { background: rgba(192,57,43,0.1); color: #c0392b; border-color: #c0392b; }
+
+        .empty { text-align: center; padding: 40px; color: #555; font-size: 14px; }
+
         /* Footer */
         .site-footer {
             text-align: center;
@@ -651,6 +709,7 @@
             .packages-grid { grid-template-columns: 1fr; }
             .booking-packages-grid { grid-template-columns: 1fr; }
             .qr-grid { grid-template-columns: 1fr; }
+            .dash-stats { grid-template-columns: 1fr 1fr; }
             .hero-buttons { flex-direction: column; width: 100%; }
             .btn-primary, .btn-outline { width: 100%; text-align: center; }
         }
@@ -674,6 +733,7 @@
             <button class="nav-btn" onclick="showPage('locations', this)">Locations</button>
             <button class="nav-btn" onclick="showPage('contact', this)">Contacts</button>
             <button class="nav-btn" onclick="showPage('booking', this)">Book a Detail</button>
+            <button class="nav-btn" onclick="showPage('dashboard', this)">Admin</button>
         </nav>
     </header>
 
@@ -795,7 +855,6 @@
             <!-- Testimonial Carousel -->
             <div class="testimonial-carousel-wrapper">
                 <div class="testimonial-track" id="testimonialTrack">
-                    <!-- Slide 1 -->
                     <div class="testimonial-slide">
                         <div class="testimonial-card">
                             <div class="testimonial-stars">★★★★★</div>
@@ -806,7 +865,6 @@
                             <div class="testimonial-service">Full Detail + Ceramic Coating</div>
                         </div>
                     </div>
-                    <!-- Slide 2 -->
                     <div class="testimonial-slide">
                         <div class="testimonial-card">
                             <div class="testimonial-stars">★★★★★</div>
@@ -817,7 +875,6 @@
                             <div class="testimonial-service">Basic Interior Detail</div>
                         </div>
                     </div>
-                    <!-- Slide 3 -->
                     <div class="testimonial-slide">
                         <div class="testimonial-card">
                             <div class="testimonial-stars">★★★★★</div>
@@ -828,7 +885,6 @@
                             <div class="testimonial-service">Deluxe Detail + Ceramic Coating</div>
                         </div>
                     </div>
-                    <!-- Slide 4 -->
                     <div class="testimonial-slide">
                         <div class="testimonial-card">
                             <div class="testimonial-stars">★★★★★</div>
@@ -839,7 +895,6 @@
                             <div class="testimonial-service">Full Detail</div>
                         </div>
                     </div>
-                    <!-- Slide 5 -->
                     <div class="testimonial-slide">
                         <div class="testimonial-card">
                             <div class="testimonial-stars">★★★★★</div>
@@ -850,7 +905,6 @@
                             <div class="testimonial-service">Full Detail + Ceramic Coating + Rim Shine</div>
                         </div>
                     </div>
-                    <!-- Slide 6 -->
                     <div class="testimonial-slide">
                         <div class="testimonial-card">
                             <div class="testimonial-stars">★★★★★</div>
@@ -861,7 +915,6 @@
                             <div class="testimonial-service">Basic Exterior + Interior Detail</div>
                         </div>
                     </div>
-                    <!-- Slide 7 -->
                     <div class="testimonial-slide">
                         <div class="testimonial-card">
                             <div class="testimonial-stars">★★★★★</div>
@@ -872,7 +925,6 @@
                             <div class="testimonial-service">Deluxe Detail + Fog Removal</div>
                         </div>
                     </div>
-                    <!-- Slide 8 -->
                     <div class="testimonial-slide">
                         <div class="testimonial-card">
                             <div class="testimonial-stars">★★★★★</div>
@@ -941,7 +993,7 @@
                 </div>
                 <div class="contact-row">
                     <div class="contact-label">Area</div>
-                    <div>West Vancouver, North Shore &amp; Downtown</div>
+                    <div>Vancouver, Burnaby, Surrey &amp; nearby</div>
                 </div>
                 <div class="contact-row">
                     <div class="contact-label">Hours</div>
@@ -993,7 +1045,6 @@
         </div>
     </section>
 
-    <!-- Booking -->
     <!-- Hidden Netlify Form for build-time detection -->
     <form hidden method='POST' name='booking' data-netlify="true">
         <input type="hidden" name="form-name" value="booking" />
@@ -1007,6 +1058,7 @@
         <input name="subject" value="New Booking from %{client-name}" />
     </form>
 
+    <!-- Booking -->
     <section id="booking" class="page-section">
         <div class="booking-section">
             <h2 class="section-heading">Book a Detail</h2>
@@ -1135,7 +1187,37 @@
 
             <div class="success-msg" id="successMsg">
                 <div class="s-title">Booking request sent!</div>
-                <div class="s-sub">Thanks! BWS Details has been notified and will confirm your appointment shortly. You'll hear from us soon!</div>
+                <div class="s-sub">Thanks! Notification sent to budswithsudsvancouver@gmail.com. Check the Dashboard to manage this booking.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="dashboard" class="page-section">
+        <div class="dashboard-section">
+            <h2 class="section-heading">Admin Dashboard</h2>
+            <p class="section-sub">Manage bookings and track revenue</p>
+
+            <div class="dash-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Total bookings</div>
+                    <div class="stat-val" id="statTotal">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Pending</div>
+                    <div class="stat-val" id="statPending">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Revenue</div>
+                    <div class="stat-val" id="statRevenue">$0</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="section-title">All bookings</div>
+                <div id="bookingsList">
+                    <div class="empty">No bookings yet. They'll appear here once clients book.</div>
+                </div>
             </div>
         </div>
     </section>
@@ -1227,7 +1309,7 @@
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(page).classList.add('active');
             if (btn) btn.classList.add('active');
-
+            if (page === 'dashboard') updateDashboard();
             window.scrollTo(0, 0);
         }
 
@@ -1266,11 +1348,9 @@
             const total = basePrice + addonTotal;
             const addons = Array.from(document.querySelectorAll('.addon-item.selected')).map(a => a.querySelector('.addon-name').textContent);
 
-            // Format date for display
             const dateObj = new Date(selectedDate + 'T12:00:00');
             const dateDisplay = dateObj.toLocaleDateString('en-CA', {weekday:'long', month:'long', day:'numeric', year:'numeric'});
 
-            // Submit to Netlify Forms (triggers email notification + submission-created function)
             const submitBtn = document.querySelector('.submit-btn');
             submitBtn.textContent = 'Sending...';
             submitBtn.disabled = true;
@@ -1294,7 +1374,6 @@
 
                 if (!response.ok) throw new Error('Submission failed');
 
-                // Also save locally
                 bookings.push({ id: Date.now(), name, phone, date: selectedDate, size: selectedPackage, addons, total, status: 'pending' });
                 saveBookings();
                 renderCalendar();
@@ -1313,6 +1392,7 @@
                     addonTotal = 0;
                     updateTotal();
                     renderCalendar();
+                    updateDashboard();
                 }, 3000);
             } catch (err) {
                 alert('Something went wrong submitting your booking. Please try again.');
@@ -1320,6 +1400,93 @@
                 submitBtn.disabled = false;
             }
         }
+
+        async function cycleStatus(id) {
+            const b = bookings.find(b => b.id === id || b.id === String(id));
+            if (!b) return;
+            const statuses = ['pending','confirmed','done'];
+            b.status = statuses[(statuses.indexOf(b.status)+1) % statuses.length];
+            saveBookings();
+            // Sync to server
+            try {
+                await fetch('/api/bookings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: String(b.id), status: b.status })
+                });
+            } catch(e) {}
+            updateDashboard();
+        }
+
+        async function deleteBooking(id) {
+            if (!confirm('Remove this booking?')) return;
+            bookings = bookings.filter(b => b.id !== id && b.id !== String(id));
+            saveBookings();
+            // Sync to server
+            try {
+                await fetch('/api/bookings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: String(id), action: 'delete' })
+                });
+            } catch(e) {}
+            renderCalendar();
+            updateDashboard();
+        }
+
+        function updateDashboard() {
+            const pending = bookings.filter(b => b.status === 'pending').length;
+            const revenue = bookings.filter(b => b.status === 'done').reduce((s,b) => s+b.total, 0);
+            document.getElementById('statTotal').textContent = bookings.length;
+            document.getElementById('statPending').textContent = pending;
+            document.getElementById('statRevenue').textContent = '$' + revenue;
+            const list = document.getElementById('bookingsList');
+            if (!bookings.length) {
+                list.innerHTML = '<div class="empty">No bookings yet. They\'ll appear here once clients book.</div>';
+                return;
+            }
+            const sorted = [...bookings].sort((a,b) => new Date(a.date)-new Date(b.date));
+            list.innerHTML = sorted.map(b => `
+                <div class="booking-row">
+                    <div>
+                        <div class="b-client">${b.name}</div>
+                        <div class="b-detail" style="color:#c0392b;font-weight:500;">📞 ${b.phone}</div>
+                        <div class="b-detail">${(b.size || '').split('/')[0].trim()}${b.addons && b.addons.length ? ' · ' + b.addons.join(', ') : ''}</div>
+                        <span class="status-badge status-${b.status}" onclick="cycleStatus('${b.id}')" title="Click to change status">${b.status}</span>
+                    </div>
+                    <div>
+                        <div class="b-price">$${b.total}</div>
+                        <div class="b-date">${new Date(b.date+'T12:00:00').toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'})}</div>
+                        <button class="delete-btn" onclick="deleteBooking('${b.id}')">remove</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load bookings from server on page load (merge with localStorage)
+        async function loadServerBookings() {
+            try {
+                const res = await fetch('/api/bookings');
+                if (res.ok) {
+                    const serverBookings = await res.json();
+                    if (serverBookings && serverBookings.length) {
+                        // Merge server bookings with local (server is authoritative)
+                        const localIds = new Set(bookings.map(b => String(b.id)));
+                        serverBookings.forEach(sb => {
+                            if (!localIds.has(String(sb.id))) {
+                                bookings.push(sb);
+                            }
+                        });
+                        saveBookings();
+                        renderCalendar();
+                        updateDashboard();
+                    }
+                }
+            } catch(e) {
+                // Server not available, use local data only
+            }
+        }
+        loadServerBookings();
 
         renderCalendar();
 
